@@ -25,24 +25,28 @@ const Login = () => {
     const storedRegistrationData = JSON.parse(localStorage.getItem('userRegistrationData'));
   
     // Check if either stored data source matches the entered email and password
-    const isValidLogin = 
-      (storedData && storedData.email === formData.email && storedData.password === formData.password) ||
-      (storedRegistrationData && storedRegistrationData.email === formData.email && storedRegistrationData.password === formData.password);
+    const userFromData = storedData && storedData.email === formData.email && storedData.password === formData.password;
+    const userFromRegistration = storedRegistrationData && storedRegistrationData.email === formData.email && storedRegistrationData.password === formData.password;
   
-    if (isValidLogin) {
-      // Successfully logged in
+    if (userFromData || userFromRegistration) {
       // Store a flag or token to mark the user as logged in
       localStorage.setItem('currentUser', JSON.stringify({ email: formData.email }));
   
-      // Redirect to home or dashboard page
-      navigate('/');
+      if (userFromData) {
+        // Navigate to home or dashboard page for users in 'userData'
+        navigate('/Admin');
+      } else if (userFromRegistration) {
+        // Navigate to admin page for users in 'userRegistrationData'
+        navigate('/');
+      }
   
       // Optionally show a success message
       alert('Login successful!');
     } else {
       // Login failed
       alert('Invalid email or password');
-    }}
+    }
+  };
   return (
     <div>
       <div>

@@ -67,11 +67,15 @@ const Navbar1 = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className={`lg:hidden flex min-h-[65vh] items-center justify-center absolute z-50 left-0 top-full py-10 text-center w-full bg-black transition-transform duration-300 ${open ? 'translate-y-0' : '-translate-y-full'}`}>
-            <ul className="flex items-center gap-9 flex-col text-center">
+          {
+open && (
+
+<div className={`lg:hidden flex min-h-[65vh] items-center justify-center absolute z-50 left-0 top-[15%] py-10 text-center w-full bg-black transition-transform duration-300 ease-in-out ${open ? 'translate-y-0' : 'translate-y-full'}`}>
+<ul className="flex items-center gap-9 flex-col text-center">
               <li>
                 <NavLink
-                  onClick={() => setOpen(false)}
+                 onClick={menufunc}
+                
                   className="md:text-lg text-base text-gray-100 hover:text-gray-300 px-3 py-5"
                   to="/"
                 >
@@ -80,7 +84,8 @@ const Navbar1 = () => {
               </li>
               <li>
                 <NavLink
-                  onClick={() => setOpen(false)}
+                 onClick={menufunc}
+              
                   className="md:text-lg text-base text-gray-100 hover:text-gray-300 px-3 py-5"
                   to="/About"
                 >
@@ -89,7 +94,8 @@ const Navbar1 = () => {
               </li>
               <li>
                 <NavLink
-                  onClick={() => setOpen(false)}
+                 onClick={menufunc}
+                 
                   className="md:text-lg text-base text-gray-100 hover:text-gray-300 px-3 py-5"
                   to="/Services"
                 >
@@ -98,7 +104,8 @@ const Navbar1 = () => {
               </li>
               <li>
                 <NavLink
-                  onClick={() => setOpen(false)}
+                 onClick={menufunc}
+                  
                   className="md:text-lg text-base text-gray-100 hover:text-gray-300 px-3 py-5"
                   to="/Product"
                 >
@@ -107,7 +114,7 @@ const Navbar1 = () => {
               </li>
               <li>
                 <NavLink
-                  onClick={() => setOpen(false)}
+                  onClick={menufunc}
                   className="md:text-lg text-base text-gray-100 hover:text-gray-300 px-3 py-5"
                   to="/contact"
                 >
@@ -118,7 +125,8 @@ const Navbar1 = () => {
                 <div className="md:hidden">
                   {isLoggedIn() ? (
                     <button
-                      onClick={handleLogout}
+                      onClick={handleLogout
+                      }
                       className="inline-flex items-center bg-gray-100 rounded-full py-1 px-4 focus:outline-none hover:bg-gray-200 text-base mt-4 md:mt-0"
                     >
                       Logout
@@ -126,11 +134,13 @@ const Navbar1 = () => {
                   ) : (
                     <>
                       <Link to="/Adminlog">
+                      onClick={menufunc}
                         <button className="inline-flex items-center bg-gray-100 rounded-full py-1 px-4 focus:outline-none hover:bg-gray-200 text-base mt-4 md:mt-0">
                           Admin Sign Up
                         </button>
                       </Link>
-                      <Link to="/SignUp">
+                      <Link to="/Sign Up">
+                      onClick={menufunc}
                         <button className="inline-flex items-center bg-gray-100 rounded-full ml-3 py-1 px-4 focus:outline-none hover:bg-gray-200 text-base mt-4 md:mt-0">
                           Sign Up
                         </button>
@@ -141,6 +151,7 @@ const Navbar1 = () => {
               </li>
             </ul>
           </div>
+)}
 
           {/* Right Section (Desktop) */}
           <div className="flex items-center gap-9 mb-1">

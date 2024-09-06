@@ -15,7 +15,7 @@ const Hero = () => {
             <div className="bg-dark-nav text-white py-10">
   
 
-  <div className="flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-12 py-16">
+  <div className="flex flex-col-reverse order-2 md:order-2 md:flex-row items-center justify-between px-6 md:px-12 py-16">
     {/* Key Information and Features */}
     <div className="order-2 md:order-1 flex flex-col items-center md:items-start text-center md:text-left">
       <h1 className="text-4xl font-medium mb-4">Mobile Wallet</h1>
@@ -36,7 +36,7 @@ const Hero = () => {
   </div>
 
   {/* Sections for Sending and Requesting Money */}
-  <div className="bg-slate-600 text-white py-10">
+  <div className="bg-slate-600 order -3 md:order-3  text-white py-10">
     <div className="flex flex-col md:flex-row justify-around items-center px-6 md:px-12">
       <div className="text-center md:text-left">
         <h2 className="text-2xl font-medium mb-4">Send Money</h2>
