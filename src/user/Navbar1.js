@@ -67,7 +67,7 @@ const Navbar1 = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className={`lg:hidden flex min-h-[65vh] items-center justify-center absolute left-0 top-full py-10 text-center w-full bg-black transition-transform duration-300 ${open ? 'translate-y-0' : '-translate-y-full'}`}>
+          <div className={`lg:hidden flex min-h-[65vh] items-center justify-center absolute z-50 left-0 top-full py-10 text-center w-full bg-black transition-transform duration-300 ${open ? 'translate-y-0' : '-translate-y-full'}`}>
             <ul className="flex items-center gap-9 flex-col text-center">
               <li>
                 <NavLink
