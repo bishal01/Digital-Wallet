@@ -1,8 +1,80 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Heroimg from './img/img2.jpg'
-import { NavLink } from 'react-router-dom'
+import Swal from 'sweetalert2';
 
 const Hero = () => {
+  const [isDepositCardOpen, setIsDepositCardOpen] = useState(false);
+  const [isTransferCardOpen, setIsTransferCardOpen] = useState(false);
+  const userData = localStorage.getItem('userRegistrationData');
+
+
+  const [formData, setFormData] = useState({
+    amount: '',
+    accountNumber: '',
+    transactionDate: '',
+  });
+  const [formData1, setFormData1] = useState({
+    amount: '',
+    accountNumber: '',
+    transactionDate: '',
+    transferTo: '',  // Additional field for Transfer
+    description: '',  // Additional field for Transfer
+  });
+  const toggleDepositCard = () => {
+    setIsDepositCardOpen(!isDepositCardOpen);
+  };
+  const toggleTransferCard = () => {
+    setIsTransferCardOpen(!isTransferCardOpen); // Close transfer card when deposit is open
+  };
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Show success alert using SweetAlert2 based on the transaction type
+    if (isDepositCardOpen) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Your deposit transaction was successful.',
+        confirmButtonText: 'OK',
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+     else if (isTransferCardOpen) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Your transfer transaction was successful.',
+        confirmButtonText: 'OK',
+        timer: 3000,
+        timerProgressBar: true,
+      });
+      
+    }
+    setFormData({
+      amount: '',
+      accountNumber: '',
+      transactionDate: '',
+      transferTo: '',
+      description: '',
+    });
+
+    // Close both cards
+    setIsDepositCardOpen(false);
+    setIsTransferCardOpen(false);
+
+  }
+
   return (
     <div>
         <section className="text-gray-600 body-font mt-5 md:h-[90vh]  ">
@@ -36,22 +108,183 @@ const Hero = () => {
   </div>
 
   {/* Sections for Sending and Requesting Money */}
-  <div className="bg-slate-600 order -3 md:order-3  text-white py-10">
-    <div className="flex flex-col md:flex-row justify-around items-center px-6 md:px-12">
-      <div className="text-center md:text-left">
-        <h2 className="text-2xl font-medium mb-4">Send Money</h2>
-        <p className="text-lg text-gray-300">Quickly and securely send money to anyone, anywhere. Enjoy instant transfers with just a few taps.</p>
+  <div className="order-3 md:order-3 text-white py-10">
+  <div className="flex flex-col md:flex-row justify-around items-center px-6 md:px-12">
+    <div className="text-center md:text-left">
+      <h2 className="text-2xl font-medium mb-4">Deposit Money</h2>
+      <button 
+      onClick={toggleDepositCard}
+      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+        Deposit
+      </button>
+     
+    </div>
+    {
+  userData ? (
+    isDepositCardOpen && (
+      <div className="bg-white text-black rounded-lg shadow-lg mt-6 p-6 max-w-md mx-auto">
+        <h3 className="text-lg font-medium mb-4">Deposit Transaction</h3>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Amount</label>
+            <input 
+              type="number" 
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter deposit amount"
+              required 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Account Number</label>
+            <input 
+              type="text" 
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter account number"
+              required 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Transaction Date</label>
+            <input 
+              type="date" 
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              required 
+            />
+          </div>
+          <div className="flex">
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+            >
+              Submit
+            </button>
+            <button 
+              type="button" 
+              onClick={toggleDepositCard} 
+              className="ml-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
-      <div className="text-center md:text-left mt-8 md:mt-0">
-        <h2 className="text-2xl font-medium mb-4">Request Money</h2>
-        <p className="text-lg text-gray-300">Easily request payments from friends and family. Track your requests and get paid fast.</p>
-      </div>
+    )
+  ) : (
+    isDepositCardOpen && (
+      <div className="bg-red-100 text-red-700 p-4 rounded-lg mt-6 max-w-md mx-auto">
+      <p>Please <a href="/signup" className="text-blue-500">sign up first</a>.</p>
+      <button 
+        type="button" 
+        onClick={toggleDepositCard}
+        className="mt-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+      >
+        Close
+      </button>
+    </div>
+  ))
+}
+    <div className="text-center md:text-left mt-8 md:mt-0">
+      <h2 className="text-2xl font-medium mb-4">Transfer Money</h2>
+      <button
+      onClick={toggleTransferCard}
+      className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+        Transfer
+      </button>
     </div>
   </div>
 </div>
 
+</div>
+
+{userData ? (
+        isTransferCardOpen && (
+          <div className="bg-white text-black rounded-lg shadow-lg mt-6 p-6 max-w-md mx-auto">
+            <h3 className="text-lg font-medium mb-4">Transfer Transaction</h3>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Amount</label>
+                <input 
+                  type="number" 
+                  name="amount"
+                  value={formData.amount}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter transfer amount"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Transfer To</label>
+                <input 
+                  type="text" 
+                  name="transferTo"
+                  value={formData.transferTo}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter recipient account number"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <input 
+                  type="text" 
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter transaction description"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Transaction Date</label>
+                <input 
+                  type="date" 
+                  name="transactionDate"
+                  value={formData.transactionDate}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  required 
+                />
+              </div>
+              <div className="flex">
+                <button 
+                  type="submit" 
+                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+                >
+                  Submit
+                </button>
+                <button 
+                  type="button" 
+                  onClick={toggleTransferCard} 
+                  className="ml-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )
+      ) : (
+        isTransferCardOpen && (
+          <div className="bg-red-100 text-red-700 p-4 rounded-lg mt-6 max-w-md mx-auto">
+            <p>Please <a href="/signup" className="text-blue-500">sign up first</a>.</p>
+            <button 
+              type="button" 
+              onClick={toggleTransferCard}
+              className="mt-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+            >
+              Close
+            </button>
+          </div>
+        )
+      )}
+
+
         </div>
     </section>
+
     </div>
   )
 }

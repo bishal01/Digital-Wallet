@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar1 = () => {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userRegistrationData = JSON.parse(localStorage.getItem("userRegistrationData"));
   const navigate = useNavigate();
   
   // Check if user data exists in local storage
@@ -24,14 +26,16 @@ const Navbar = () => {
           <Link to="index.html" className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
           
             <span className="ml-3 text-xl text-white font-extrabold ">
-              <Link to='/' >AMSEV PTY</Link>
+              <Link to='/Admin' >AMSEV PTY</Link>
                </span>
           </Link>
           <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-            <Link to="/" className="mr-5 text-white px-4 hover:text-gray-300 cursor-pointer">Home</Link>
-            <Link to="/About" className="mr-5 text-white px-4 hover:text-gray-300 cursor-pointer">About</Link>
-            <Link to="/Services" className="mr-5 text-white px-4 hover:text-gray-300 cursor-pointer">Services</Link>
-            <Link to="/Product" className="mr-5 text-white px-4 hover:text-gray-300 cursor-pointer">Product</Link>
+     
+      <Link to="/Admin" className="mr-5 text-white px-4 hover:text-gray-300 cursor-pointer">Home</Link>
+    
+    
+  
+         
         </nav>
         {isLoggedIn() ? (
         <button
@@ -60,4 +64,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export default Navbar1

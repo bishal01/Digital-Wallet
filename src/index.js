@@ -18,6 +18,7 @@ const router=createBrowserRouter(
     {
       path:'/',
       element:<App />,
+     
       children:[
         {
           path:'/',
@@ -50,10 +51,7 @@ const router=createBrowserRouter(
   path:'/Adminlog',
   element:< Signup1/>
 },
-{
-  path:'/Admin',
-  element:< Admin/>
-},
+
 {
   path:'/login',
   element:< Login/>
@@ -64,8 +62,13 @@ const router=createBrowserRouter(
 },
 
      
-      ]
-    }
+      ],
+
+    },
+    {
+      path:'/Admin',
+      element:< Admin/>
+    },
 
     
   ])
