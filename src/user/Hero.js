@@ -1,81 +1,124 @@
 import React,{useState} from 'react'
 import Heroimg from './img/img2.jpg'
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom'
 
 const Hero = () => {
   const [isDepositCardOpen, setIsDepositCardOpen] = useState(false);
   const [isTransferCardOpen, setIsTransferCardOpen] = useState(false);
   const userData = localStorage.getItem('userRegistrationData');
 
-
+  // State for deposit and transfer forms
   const [formData, setFormData] = useState({
     amount: '',
     accountNumber: '',
     transactionDate: '',
+    transferTo: '',
+    description: ''
   });
-  const [formData1, setFormData1] = useState({
-    amount: '',
-    accountNumber: '',
-    transactionDate: '',
-    transferTo: '',  // Additional field for Transfer
-    description: '',  // Additional field for Transfer
-  });
+
+  // Toggle Deposit Card
   const toggleDepositCard = () => {
     setIsDepositCardOpen(!isDepositCardOpen);
+    setIsTransferCardOpen(false); // Close transfer card when deposit is open
   };
+
+  // Toggle Transfer Card
   const toggleTransferCard = () => {
-    setIsTransferCardOpen(!isTransferCardOpen); // Close transfer card when deposit is open
+    setIsTransferCardOpen(!isTransferCardOpen);
+    setIsDepositCardOpen(false); // Close deposit card when transfer is open
   };
 
-
+  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: value
     });
+    console.log(`Updated ${name}:`, value);  // Log the input change
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Show success alert using SweetAlert2 based on the transaction type
-    if (isDepositCardOpen) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Your deposit transaction was successful.',
-        confirmButtonText: 'OK',
-        timer: 3000,
-        timerProgressBar: true,
+  // Handle form submission for deposit and transfer
+    // Handle form submission for deposit and transfer
+    const handleSubmit = (e) => {
+      e.preventDefault();
+    
+      // Retrieve existing transactions from local storage
+      let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    
+      // Determine the type of transaction (deposit or transfer)
+      const transactionType = isDepositCardOpen ? 'Deposit' : 'Transfer';
+    
+      // Create a new transaction object
+      const newTransaction = {
+        type: transactionType,
+        amount: formData.amount,
+        accountNumber: formData.accountNumber,
+        transactionDate: formData.transactionDate,
+        transferTo: formData.transferTo,
+        description: formData.description
+      };
+    
+      // Add the new transaction to the existing list
+      transactions.push(newTransaction);
+    
+      // Save the updated transactions back to local storage
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+    
+      // Show success alert
+      Swal.fire('Success', `${transactionType} transaction successful!`, 'success');
+    
+      // Reset form data after submission
+      setFormData({
+        amount: '',           // Reset the amount
+        accountNumber: '',     // Reset the account number
+        transactionDate: '',   // Reset the transaction date
+        transferTo: '',        // Reset the transfer field
+        description: ''        // Reset the description
       });
-    }
-     else if (isTransferCardOpen) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Your transfer transaction was successful.',
-        confirmButtonText: 'OK',
-        timer: 3000,
-        timerProgressBar: true,
+    
+      setIsDepositCardOpen(false);
+      setIsTransferCardOpen(false);
+    };
+
+    const handleSubmitTransfer = (e) => {
+      e.preventDefault();
+    
+      // Retrieve existing transfer transactions from local storage
+      let transferTransactions = JSON.parse(localStorage.getItem('transferTransactions')) || [];
+    
+      // Create a new transaction object for transfer
+      const newTransferTransaction = {
+        type: 'Transfer',
+        amount: formData.amount,
+        transferTo: formData.transferTo,
+        description: formData.description,
+        transactionDate: formData.transactionDate
+      };
+    
+      // Add the new transfer transaction to the existing list
+      transferTransactions.push(newTransferTransaction);
+    
+      // Save the updated transfer transactions back to local storage
+      localStorage.setItem('transferTransactions', JSON.stringify(transferTransactions));
+    
+      // Show success alert
+      Swal.fire('Success', 'Transfer transaction successful!', 'success');
+    
+      // Reset form data after submission
+      setFormData({
+        amount: '',           // Reset the amount
+        transferTo: '',        // Reset the transferTo field
+        description: '',       // Reset the description
+        transactionDate: ''    // Reset the transaction date
       });
-      
-    }
-    setFormData({
-      amount: '',
-      accountNumber: '',
-      transactionDate: '',
-      transferTo: '',
-      description: '',
-    });
-
-    // Close both cards
-    setIsDepositCardOpen(false);
-    setIsTransferCardOpen(false);
-
-  }
+    
+      setIsTransferCardOpen(false);
+    };
 
   return (
+    <>
     <div>
         <section className="text-gray-600 body-font mt-5 md:h-[90vh]  ">
         <div className="container mx-auto w-[90%] flex h-full px-5 py-12 flex-col md:flex-row items-center bg-gradient-to-r from-blue-950 to-blue-900 rounded-3xl shadow-lg">
@@ -92,14 +135,20 @@ const Hero = () => {
     <div className="order-2 md:order-1 flex flex-col items-center md:items-start text-center md:text-left">
       <h1 className="text-4xl font-medium mb-4">Mobile Wallet</h1>
       <p className="mb-8 text-xl text-gray-300">"Your Money, Your World, at Your Fingertips"</p>
+
       <div className="flex justify-center md:justify-start">
-        <button className="bg-white text-blue-950 flex items-center py-2 px-6 rounded-full hover:bg-gray-200 focus:outline-none">
-          <span className="flex-grow text-center">Learn More</span>
-          <span className="bg-black text-white rounded-full p-2 ml-4">
-            <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
+     
+        <button className="bg-white ml-3 text-blue-950 flex items-center py-2 px-6 rounded-full hover:bg-gray-200 focus:outline-none">
+          <span className="flex-grow text-center">
+            <Link to="view_transactions" > View Updated transaction </Link>
           </span>
+    
+        </button>
+        <button className="bg-white ml-3 text-blue-950 flex items-center py-2 px-6 rounded-full hover:bg-gray-200 focus:outline-none">
+          <span className="flex-grow text-center">
+            <Link to="view_transfer" > Transaction History </Link>
+          </span>
+    
         </button>
       </div>
     </div>
@@ -125,54 +174,63 @@ const Hero = () => {
       <div className="bg-white text-black rounded-lg shadow-lg mt-6 p-6 max-w-md mx-auto">
         <h3 className="text-lg font-medium mb-4">Deposit Transaction</h3>
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Amount</label>
-            <input 
-              type="number" 
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter deposit amount"
-              required 
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Account Number</label>
-            <input 
-              type="text" 
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter account number"
-              required 
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Transaction Date</label>
-            <input 
-              type="date" 
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              required 
-            />
-          </div>
-          <div className="flex">
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
-            >
-              Submit
-            </button>
-            <button 
-              type="button" 
-              onClick={toggleDepositCard} 
-              className="ml-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+  <div>
+    <label className="block text-sm font-medium text-gray-700">Amount</label>
+    <input 
+      type="number" 
+      name="amount" // Add name attribute
+      value={formData.amount} // Bind to formData state
+      onChange={handleInputChange} // Handle input changes
+      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      placeholder="Enter deposit amount"
+      required 
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700">Account Number</label>
+    <input 
+      type="text" 
+      name="accountNumber" // Add name attribute
+      value={formData.accountNumber} // Bind to formData state
+      onChange={handleInputChange} // Handle input changes
+      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      placeholder="Enter account number"
+      required 
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700">Transaction Date</label>
+    <input 
+      type="date" 
+      name="transactionDate" // Add name attribute
+      value={formData.transactionDate} // Bind to formData state
+      onChange={handleInputChange} // Handle input changes
+      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      required 
+    />
+  </div>
+  <div className="flex">
+    <button
+      type="submit"
+      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+    >
+      Submit
+    </button>
+    <button 
+      type="button" 
+      onClick={toggleDepositCard} 
+      className="ml-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+    >
+      Cancel
+    </button>
+  </div>
+</form>
       </div>
     )
   ) : (
     isDepositCardOpen && (
       <div className="bg-red-100 text-red-700 p-4 rounded-lg mt-6 max-w-md mx-auto">
-      <p>Please <a href="/signup" className="text-blue-500">sign up first</a>.</p>
+      <p>Please <Link href="//Sign up" className="text-blue-500">sign up first</Link>.</p>
       <button 
         type="button" 
         onClick={toggleDepositCard}
@@ -200,7 +258,7 @@ const Hero = () => {
         isTransferCardOpen && (
           <div className="bg-white text-black rounded-lg shadow-lg mt-6 p-6 max-w-md mx-auto">
             <h3 className="text-lg font-medium mb-4">Transfer Transaction</h3>
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmitTransfer }>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Amount</label>
                 <input 
@@ -269,7 +327,7 @@ const Hero = () => {
       ) : (
         isTransferCardOpen && (
           <div className="bg-red-100 text-red-700 p-4 rounded-lg mt-6 max-w-md mx-auto">
-            <p>Please <a href="/signup" className="text-blue-500">sign up first</a>.</p>
+            <p>Please <Link to="/Sign up" className="text-blue-500">sign up first</Link>.</p>
             <button 
               type="button" 
               onClick={toggleTransferCard}
@@ -286,7 +344,12 @@ const Hero = () => {
     </section>
 
     </div>
+    </>
   )
 }
+
+
+
+
 
 export default Hero

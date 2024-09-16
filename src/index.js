@@ -12,6 +12,8 @@ import Signup1 from './admin/Signup1';
 import Admin from './admin/Admin';
 import Login from './Login';
 import Contact from './user/Contact';
+import Viewtr from './user/Viewtr';
+import Transfer from './user/Transfer';
 
 const router=createBrowserRouter(
   [
@@ -60,6 +62,14 @@ const router=createBrowserRouter(
   path:'/contact',
   element:< Contact/>
 },
+{
+  path:'/view_transactions',
+  element:< Viewtr/>
+},
+{
+  path:'/view_transfer',
+  element:< Transfer/>
+}
 
      
       ],
